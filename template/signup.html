@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - SH2 Job Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: lavender; 
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-image: url('https://img.freepik.com/free-photo/abstract-splash-violet-paint_23-2147809147.jpg?size=626&ext=jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+
+
+        form {
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(10, 10, 10, 0.1);
+            width: 300px;
+            text-align: center;
+            margin-top: 20px; 
+        }
+
+
+        h1 {
+            margin-bottom: 20px;
+            color:#6a5acd; 
+        }
+
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #6a5acd; 
+        }
+
+
+        input {
+            width: 100%;
+            padding: 10px;
+            color:#6a5acd; 
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid lavender;
+            border-radius: 4px;
+        }
+
+
+        button {
+            background-color: #6a5acd; 
+            color: #fff; 
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+
+        button:hover {
+            background-color: #4b0082;
+        }
+
+
+        .error-message {
+            color: #ff0000; 
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <form id="signupForm" action="/signup" method="POST" onsubmit="return submitSignUp()">
+        <h1>Sign Up</h1>
+
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required>
+
+        <div class="error-message" id="error-message"></div>
+
+        <button type="submit">Sign Up</button>
+    </form>
+    <script>
+       async function submitSignUp() {
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var errorMessage = document.getElementById('error-message');
+    
+            try {
+                if (!username || !email || !password) {
+                    throw new Error('Please fill out all fields.');
+                }
+    
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                        email: email,
+                    }),
+                });
+    
+                if (response.status === 201) {
+                    
+                    window.location.href = 'profile_creating.html';
+                } else {
+                    const data = await response.json();
+                    if (data.error) {
+                        errorMessage.innerText = data.error;
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.innerText = 'An error occurred while processing your request.';
+            }
+    
+            return false; 
+        }
+
+    </script>         
+</body>
+</html>

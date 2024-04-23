@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+
+
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: lavender;
+    margin: 0;
+    padding: 0;
+    background-image: url('https://img.freepik.com/free-photo/blue-watercolor-leaf-background-aesthetic-winter-season_53876-143135.jpg?t=st=1712414911~exp=1712415511~hmac=bb48d96bacc86f25f4d8f34af7297cb60b30eddc615603ee55ab5645fb99d1a8');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh; 
+}
+
+header {
+    background-color: #6a5acd;
+    color: lavender;
+    padding: 20px 0; 
+    text-align: center;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+}
+
+main {
+    padding: 20px;
+}
+
+.settings-container {
+    max-width: 600px;
+    margin: 20px auto; 
+    background-color:lavender;
+    border-radius: 10px; 
+    padding: 30px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
+}
+
+.settings-info {
+    margin-bottom: 20px;
+}
+
+.settings-info label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #6a5acd;
+}
+
+.settings-info input {
+    width: calc(100% - 20px); 
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px; 
+}
+
+.settings-btn {
+    background-color: #6a5acd;
+    color: white;
+    padding: 10px 20px; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.settings-btn:hover {
+    background-color: #4b0082;
+}
+
+    </style>
+</head>
+    <body>
+        <body>
+            <header>
+                <h1>GetInfo</h1>
+                <button class="settings-btn" onclick="goToHome()">Home</button>
+            </header>
+            <main>
+                <div class="settings-info">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username">
+                    <button class="settings-btn" onclick="getUserInfo()">Get info</button>
+                </div>
+                <div class="settings-info" id="emailInfo" style="display: none;">
+                    <label>Email:</label>
+                    <p id="userEmail"></p>
+                </div>
+            </main>
+            <script>
+                function getUserInfo() {
+                    var username = document.getElementById('username').value;
+                    fetch('/get_user_info', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username: username }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            document.getElementById('emailInfo').style.display = 'block';
+                            document.getElementById('userEmail').innerText = data.email;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+        
+                function goToHome() {
+                    window.location.href = "home.html";
+                }
+            </script>
+        </body>
+        </html>
+            

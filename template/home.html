@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js" integrity="sha512-T/Q0t1njmD8niLXOgIhxXf9VmZUT3pzlh+IIOyRCR+cWuxfpDL+hPkXYB2ZwBqLoF7Df7dYwd7T8M7iLYdA+jw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        background-color: lavender;
+        transition: background-color 0.5s;
+        background-image: url('https://img.freepik.com/free-vector/blank-blue-leafy-poster_53876-99945.jpg?w=996&t=st=1712409448~exp=1712410048~hmac=69b4ca3d7f9f258da9993935669a347e42b1ba02c026014a02aae6f104e6548e');
+        background-size: cover;
+        background-position: center;
+        overflow-x: hidden; 
+    }
+
+    .header {
+        background-color: #6a5acd;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 100%; 
+    }
+
+    .content {
+        margin: 20px;
+        padding: 20px;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        overflow-x: hidden; 
+    }
+
+        .dropdown {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: none;
+            padding: 15px;
+            z-index: 2;
+        }
+
+        .dropdown-btn {
+            padding: 10px;
+            font-size: 21px;
+            color: lavender;
+            background: none;
+            border: none;
+            cursor: pointer;
+            content: "\2261";
+        }
+
+        .dropdown-content {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #fff;
+            color: #6a5acd;
+        }
+
+        .job-posts,
+        .user-profile {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 60%;
+
+        }
+
+        .job-post,
+        .user-profile {
+            position: relative;
+            width: 80%;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            
+            border-radius: 5px;
+        }
+
+        .post-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .post-actions button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+        }
+
+        .post-actions button:hover {
+            color: #6a5acd;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .overlay-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .overlay-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        #chatBox {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #6a5acd;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 3;
+        }
+        p{
+            font-size: large;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="header">
+        <div class="dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown()">Menu</button>
+            <div class="dropdown-content" id="dropdownContent">
+                <span class="overlay-close" onclick="toggleDropdown()">&times;</span>
+                <a href="create_post.html" onclick="closeDropdown()">Create Post</a>
+                <a href="quiz.html">Quiz</a>
+                <a href="opportunity.html">World Of Opportunity</a>
+                <a href="setting.html">GetInfo</a>
+                <a href="interview.html">Interview Preparation</a>
+                <a href="logout.html">Logout</a>
+                <a href="javascript:void(0);" onclick="closeDropdown()">Back</a>
+            </div>
+        </div>
+        <h2>Welcome to SH2 (Smart Hire Hub)!</h2>
+        <p>Connecting you with your fellow collegemate. Have a great day! <br><br>"Make every single opportunity yours."</p>
+        <a href="chat_box.html" id="chatBox">Chat</a>
+    </div>
+    <div class="content">
+        {% if posts %}
+            {% for post in posts %}
+                <div class="job-post">
+                    <h3>{{ post['text'] }}</h3> 
+                    {% if post['image'] %} 
+                        <img src="data:image/jpeg;base64,{{ post['image'] }}" alt="Post Image">
+                    {% endif %}
+                    {% if post['link'] %} 
+                        <a href="{{ post['link'] }}">Link</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No posts to display.</p>
+        {% endif %}
+    </div>
+    
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    fetchPosts();
+});
+
+socket.on('new_post_created', function () {
+    fetchPosts();
+});
+
+function fetchPosts() {
+    fetch('/home')
+        .then(response => response.json())
+        .then(data => {
+            const posts = data.posts;
+            const postsContainer = document.querySelector('.content');
+            postsContainer.innerHTML = '';
+
+            if (posts.length > 0) {
+                posts.forEach(post => {
+                    const postContainer = document.createElement('div');
+                    postContainer.classList.add('job-post');
+
+                    const textElement = document.createElement('h3');
+                    textElement.textContent = post.text;
+                    postContainer.appendChild(textElement);
+
+                    if (post.image) {
+                        const imageElement = document.createElement('img');
+                        imageElement.src = `data:image/jpeg;base64,${post.image}`;
+                        imageElement.alt = 'Post Image';
+                        postContainer.appendChild(imageElement);
+                    }
+
+                    if (post.link) {
+                        const linkElement = document.createElement('a');
+                        linkElement.href = post.link;
+                        linkElement.textContent = 'Link';
+                        postContainer.appendChild(linkElement);
+                    }
+                    
+                    const emailShareElement = document.createElement('a');
+                                emailShareElement.href = `mailto:?subject=Check%20out%20this%20post&body=${encodeURIComponent(post.text)}%0A${encodeURIComponent(post.link)}`;
+                                emailShareElement.textContent = 'Share via Email';
+                                postContainer.appendChild(emailShareElement);
+
+                                const copyLinkElement = document.createElement('button');
+                                copyLinkElement.textContent = 'Copy Link';
+                                copyLinkElement.onclick = function () {
+                                    navigator.clipboard.writeText(post.link)
+                                        .then(() => {
+                                            alert('Link copied to clipboard!');
+                                        })
+                                        .catch(err => {
+                                            console.error('Error copying link: ', err);
+                                        });
+                                };
+                                postContainer.appendChild(copyLinkElement);
+
+                    postsContainer.appendChild(postContainer);
+                });
+            } else {
+                
+                const noPostsMessage = document.createElement('p');
+                noPostsMessage.textContent = 'No posts to display.';
+                postsContainer.appendChild(noPostsMessage);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching posts:', error);
+        });
+}
+
+        function toggleDropdown() {
+            const dropdownContent = document.getElementById("dropdownContent");
+            dropdownContent.style.display = dropdownContent.style.display === "flex" ? "none" : "flex";
+        }
+
+        function closeDropdown() {
+            const dropdownContent = document.getElementById("dropdownContent");
+            dropdownContent.style.display = "none";
+        }
+
+        function openChat() {
+            const chatOverlay = document.getElementById("chatOverlay");
+            chatOverlay.style.display = "flex";
+            window.location.href = "chat_box.html";
+        }
+
+        window.addEventListener('click', (event) => {
+            const chatOverlay = document.getElementById("chatOverlay");
+            if (!event.target.matches('#chatBox') && !event.target.closest('.overlay-content')) {
+                chatOverlay.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>

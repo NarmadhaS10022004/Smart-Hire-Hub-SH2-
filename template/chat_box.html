@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Chat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: lavender;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-image: url('https://img.freepik.com/free-vector/golden-glitter-blue-frame_53876-118777.jpg?w=996&t=st=1712411616~exp=1712412216~hmac=bb23d293ae8100f0505126e2666553c0e19f6d96cd082aa01be7aed521a67427'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        #chat-container {
+            width: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #chat-header {
+            color: #6a5acd;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            border-bottom: 2px solid #4b0082;
+        }
+
+        #message-container {
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            color: #6a5acd;
+        }
+
+        #message-input {
+            width: calc(100% - 5px);
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            background-color: lavender;
+            border-top: 2px solid #4b0082;
+            resize: none;
+        }
+
+        #send-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #6a5acd;
+            color: lavender;
+            border: none;
+            border-radius: 0 0 8px 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .back-btn {
+            width: 25%;
+            padding: 10px;
+            background-color: #6a5acd;
+            color: lavender;
+            border: none;
+            border-radius: 0 0 8px 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="chat-header">Group Chat -  Connected Users: <span id="connected-users">0</span></div>
+    <div id="message-container"></div>
+    <textarea id="message-input" placeholder="Type your message..."></textarea>
+    <button id="send-button" onclick="sendMessage()">Send</button>
+</div>
+<a href="home.html" class="back-btn">Home</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
+<script>
+    var socket = io();
+
+socket.on('connected_users', function(data) {
+    document.getElementById('connected-users').textContent = data.count;
+});
+
+    function sendMessage() {
+        const messageInput = document.getElementById('message-input');
+        const message = messageInput.value;
+
+        if (message.trim() !== '') {
+            appendMessage('User', message);
+            
+            socket.emit('message', { username: 'User', message: message });
+            messageInput.value = '';
+        }
+    }
+
+    function appendMessage(sender, text) {
+        const messageContainer = document.getElementById('message-container');
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        messageElement.innerHTML = `<strong>${sender}:</strong> ${text}`;
+        messageContainer.appendChild(messageElement);
+
+       
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+    socket.on('message', function (msg) {
+        appendMessage(msg.username, msg.message);
+    });
+</script>
+
+</body>
+</html>

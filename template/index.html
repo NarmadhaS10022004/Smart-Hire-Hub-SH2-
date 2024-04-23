@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SH2 Job Board</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0 ;
+            font-family: Arial, sans-serif;
+            background-color: lavender;
+            background-image: url('https://img.freepik.com/free-vector/purple-watercolour-background-corners_78370-1873.jpg?size=626&ext=jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+
+        #sh2-logo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            transition: transform 0.5s, opacity 5s;
+            font-size: 20em;
+            color:#6a5acd;
+            cursor: pointer;
+            animation: fadeIn 5s forwards;
+            opacity: 0;
+        }
+
+
+        #login-page {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 5px;
+            border-radius: 20px;
+            box-sizing: border-box;
+            color: #6a5acd;
+            max-width: 300px;
+            width: 100%;
+            text-align: center;
+            
+        }
+
+
+        #login-page input[type="text"],
+        #login-page input[type="password"] {
+            width: calc(100% - 20px);
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #6a5acd;
+            border-radius: 5px;
+            background-color: lavender;
+            color: #6a5acd;
+            box-sizing: border-box;
+        }
+
+
+        #login-page input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+
+        #login-page button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #6a5acd;
+            color: lavender;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+
+        #login-page a {
+            color: #6a5acd;
+            text-decoration: none;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+
+        #login-page .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="sh2-logo" onclick="hideWelcomeAndShowLogin()">SH2</div>
+    <div id="login-page">
+        <form id="login-form" method="post" action="/login">
+            <h1>Login</h1>
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
+            <button type="submit">Login</button>
+            <a href="forgot_password.html">Forgot password?</a>
+            <a href="signup.html">Sign Up</a>
+            <div class="error-message" id="error-message"></div>
+            <a href="admin.html">admin login</a>
+        </form>
+    </div>
+    <script>
+        function hideWelcomeAndShowLogin() {
+            var logo = document.getElementById('sh2-logo');
+            var loginPage = document.getElementById('login-page');
+
+
+            logo.style.transition = 'transform 0.5s, opacity 5s';
+            logo.style.transform = 'translate(-50%, -50%) scale(1)';
+            logo.style.opacity = '1';
+
+
+            
+            setTimeout(function () {
+                logo.style.display = 'none';
+                loginPage.style.display = 'block';
+                logo.style.position = 'absolute';
+                logo.style.top = '50%';
+                logo.style.left = '50%';
+                logo.style.transform = 'translate(-50%, -50%) scale(0.5)';
+            }, 500);
+
+setTimeout(hideWelcomeAndShowLogin, 2000);
+}
+document.getElementById('login-form').addEventListener('submit', function(event) {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username.trim() === '' || password.trim() === '') {
+                alert('Please enter both username/email and password.');
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
